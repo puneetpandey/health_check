@@ -7,6 +7,7 @@ module HealthCheck
     layout false if self.respond_to? :layout
     before_action :check_origin_ip
     before_action :authenticate
+    before_action :permit_param, only: %w(index)
 
     def index
       last_modified = Time.now.utc
@@ -71,5 +72,12 @@ module HealthCheck
       false
     end
 
+    private
+
+    def permit_param
+      if request.post?
+        params.permit(:format)
+      end
+    end
   end
 end
